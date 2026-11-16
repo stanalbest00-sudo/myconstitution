@@ -22,7 +22,7 @@ export default defineConfig({
     command: `npm run build && npx next start -p ${PORT}`,
     url: `http://127.0.0.1:${PORT}`,
     timeout: 240_000,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     env: { ANTHROPIC_API_KEY: "", ASK_LIMIT_PER_MINUTE: "1000", ASK_LIMIT_PER_DAY: "100000" },
   },
 });
