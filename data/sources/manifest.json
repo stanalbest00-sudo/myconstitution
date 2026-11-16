@@ -1,0 +1,62 @@
+{
+  "activeTextSource": "constitute-2025",
+  "retrievedOn": "2026-11-16",
+  "documents": [
+    {
+      "id": "constitute-2025",
+      "role": "text",
+      "title": "Seychelles's Constitution of 1993 with Amendments through 2025",
+      "publisher": "Constitute Project (Comparative Constitutions Project)",
+      "official": false,
+      "url": "https://www.constituteproject.org/constitution/Seychelles_2025",
+      "pdfUrl": "https://www.constituteproject.org/constitution/Seychelles_2025.pdf",
+      "file": "constitute-seychelles-2025.html",
+      "sha256": "02d536ad0613bb9a47596eeec97e5fd86aedb6a849ca4e71e8240ce6189ba28e",
+      "retrievedOn": "2026-11-16",
+      "publisherGeneratedOn": "2026-06-09",
+      "consolidatedThrough": "Constitution of the Republic of Seychelles (Twelfth Amendment) Act, 2025 (Act 6 of 2025), 4 July 2025",
+      "textStatus": "unofficial-transcription",
+      "verification": "Partially verified. Articles 113 and 114 were compared word-for-word with the Official Gazette text of Act 6 of 2025 and match. The remaining text has not been compared with an official consolidated edition.",
+      "expected": {
+        "chapters": 16,
+        "articles": 177,
+        "lastArticle": "170",
+        "insertedArticles": ["10A", "52A", "66A", "84A", "115A", "115B", "115C"],
+        "repealedArticles": ["52A"],
+        "schedules": 7
+      }
+    },
+    {
+      "id": "act-6-2025",
+      "role": "verification",
+      "title": "Constitution of the Republic of Seychelles (Twelfth Amendment) Act, 2025 (Act 6 of 2025)",
+      "publisher": "Supplement to Official Gazette, Republic of Seychelles (copy hosted by the Electoral Commission of Seychelles)",
+      "official": true,
+      "url": "https://ecs.sc/wp-content/uploads/2025/07/Act-6-2025-Constitution-of-the-Republic-of-Seychelles-Twelfth-Amendment-Act-2025.pdf",
+      "file": "act-6-2025-twelfth-amendment.pdf",
+      "sha256": "54d3c16e622d0b6b8be38b752f05a8862d9f038d38537539a500b21148fc3ec5",
+      "retrievedOn": "2026-11-16",
+      "publicationDate": "2025-07-04"
+    },
+    {
+      "id": "si-46-2026",
+      "role": "context",
+      "title": "Law Commission (Special Revision Date for Specific Laws of Seychelles) Notice, 2026 (S.I. 46 of 2026)",
+      "publisher": "Supplement to Official Gazette, Republic of Seychelles",
+      "official": true,
+      "url": "https://www.gazette.sc/sites/default/files/2026-06/SI%2046%202026%20-%20Law%20Commission%20%28Special%20Revision%20Date%20for%20Specific%20Laws%20of%20Seychelles%29%20Notice%202026.pdf",
+      "retrievedOn": "2026-11-16",
+      "publicationDate": "2026-06-01",
+      "note": "Directs the Law Commission to prepare a revised edition of the Constitution (Cap. 42) as at 1 June 2026. That revised edition was not located during research."
+    },
+    {
+      "id": "seylii-cap42",
+      "role": "reference",
+      "title": "Constitution of the Republic of Seychelles (Cap. 42), consolidated version at 4 July 2025",
+      "publisher": "Seychelles Legal Information Institute (SeyLII)",
+      "official": false,
+      "url": "https://seylii.org/akn/sc/act/si/1993/38/eng@2025-07-04",
+      "note": "Recommended place to check wording. Could not be ingested: the site presents a CAPTCHA to automated clients, which this project does not bypass."
+    }
+  ]
+}
