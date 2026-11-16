@@ -1,26 +1,115 @@
 @import "tailwindcss";
 
+/* Design tokens. Palette drawn from Seychelles landscapes: lagoon teal,
+   granite, takamaka green and beach sand. Deliberately not the national
+   flag or coat of arms, so the site does not look like a government service. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f6f3ec;
+  --surface: #ffffff;
+  --surface-2: #efebe1;
+  --ink: #15232c;
+  --muted: #4d5c66;
+  --border: #d8d2c3;
+  --accent: #0a6468;
+  --accent-ink: #ffffff;
+  --accent-soft: #dcefec;
+  --leaf: #2c6e49;
+  --warn: #9a3b1f;
+  --warn-soft: #fbe9e1;
+  --ai: #5b3f8c;
+  --ai-soft: #efe9f8;
+  --mark: #fbe38e;
+  --focus: #0a6468;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c161b; --surface: #132028; --surface-2: #1a2a33; --ink: #e8eef0; --muted: #a3b4bc;
+    --border: #2a3d47; --accent: #62cdc6; --accent-ink: #062426; --accent-soft: #123538; --leaf: #7fcf9f;
+    --warn: #f0a488; --warn-soft: #3a1f16; --ai: #c5acf2; --ai-soft: #271f3b; --mark: #6b5510; --focus: #62cdc6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c161b; --surface: #132028; --surface-2: #1a2a33; --ink: #e8eef0; --muted: #a3b4bc;
+  --border: #2a3d47; --accent: #62cdc6; --accent-ink: #062426; --accent-soft: #123538; --leaf: #7fcf9f;
+  --warn: #f0a488; --warn-soft: #3a1f16; --ai: #c5acf2; --ai-soft: #271f3b; --mark: #6b5510; --focus: #62cdc6;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-leaf: var(--leaf);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-ai: var(--ai);
+  --color-ai-soft: var(--ai-soft);
+  --color-mark: var(--mark);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-sans); line-height: 1.6; }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+::selection { background: var(--mark); color: var(--ink); }
+mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1px; }
+
+.display { font-family: var(--font-serif); letter-spacing: -0.015em; line-height: 1.1; text-wrap: balance; }
+.wrap { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1rem; }
+@media (min-width: 640px) { .wrap { padding-inline: 1.5rem; } }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 0.875rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.75rem; padding: 0.5rem 1.1rem;
+  border-radius: 999px; font-weight: 600; font-size: 0.95rem; border: 1px solid transparent; transition: background-color .15s, border-color .15s, transform .1s; cursor: pointer; }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+.btn-ghost { background: var(--surface); color: var(--ink); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--accent); }
+.link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.link:hover { text-decoration-thickness: 2px; }
+.eyebrow { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+.chip { display: inline-flex; align-items: center; min-height: 2.5rem; padding: 0.35rem 0.9rem; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--surface); font-size: 0.9rem; font-weight: 500; transition: border-color .15s, background-color .15s; }
+.chip:hover { border-color: var(--accent); background: var(--accent-soft); }
+.badge { display: inline-flex; align-items: center; gap: .3rem; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  padding: .15rem .55rem; border-radius: 999px; }
+
+/* Constitutional text: serif, generous measure, original enumeration markers. */
+.legal { font-family: var(--font-serif); font-size: 1.0625rem; line-height: 1.75; }
+.legal p { margin: 0 0 .7em; }
+.legal ol { list-style: none; margin: 0 0 .4em; padding: 0; }
+.legal li { display: grid; grid-template-columns: 2.6rem 1fr; column-gap: .25rem; }
+.legal li > .marker { color: var(--muted); font-variant-numeric: tabular-nums; }
+.legal li li { grid-template-columns: 2.3rem 1fr; }
+.legal h4 { font-family: var(--font-sans); font-size: .85rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin: 1.2em 0 .5em; }
+.legal .plain-list li { display: block; }
+@media (min-width: 640px) { .legal { font-size: 1.125rem; } }
+
+.rise { animation: rise .35s ease-out both; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.pulse-dot { animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
+.skeleton { background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 50%, var(--surface-2) 75%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; border-radius: .5rem; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rise, .pulse-dot, .skeleton { animation: none; }
+  .btn { transition: none; }
+}
+@media print {
+  header, footer, nav, .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
 }

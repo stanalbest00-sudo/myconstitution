@@ -55,9 +55,9 @@ export function chapterOf(p: Provision): Chapter | undefined {
   return p.chapter ? chapters.find((c) => c.number === p.chapter) : undefined;
 }
 
-export function chapterTitle(c: Chapter): string {
-  // Chapter III has no title of its own in the text; its Parts carry the headings.
-  return c.title ? titleCase(c.title) : "Fundamental rights, duties and remedies";
+/** Chapter title as it appears in the text. Chapter III has none: its Parts carry the headings. */
+export function chapterTitle(c: Chapter): string | null {
+  return c.title ? titleCase(c.title) : null;
 }
 
 export function provisionsInChapter(chapter: string, part?: string | null): Provision[] {
@@ -74,16 +74,20 @@ export function href(p: Provision | string): string {
   return `/constitution/${typeof p === "string" ? p : p.id}`;
 }
 
-const ARTICLE_REF = /\barticles?\s+((?:\d+[A-Z]?)(?:\s*\(\w+\))*(?:(?:\s*,\s*|\s+(?:and|or|to)\s+)(?:\d+[A-Z]?)(?:\s*\(\w+\))*)*)/gi;
+// "article 46", "article 114(1)" -> one number. "articles 15, 16, 17, 18 (3) 19 (2) to (6) and (11), 21 and 27" -> a list.
+const SINGLE_REF = /\barticle\s+(\d+[A-Z]?)/g;
+const LIST_REF = /\barticles\s+((?:\d+[A-Z]?|\(\w+\)|,|\s|\band\b|\bor\b|\bto\b)+)/g;
 
 /** Article numbers that a provision's own text refers to. */
 export function referencedArticles(p: Provision): string[] {
   const found = new Set<string>();
-  for (const m of p.text.matchAll(ARTICLE_REF)) {
-    for (const n of m[1].matchAll(/(?<![(\w])(\d+[A-Z]?)(?![\w)])/g)) {
-      const num = n[1];
-      if (num !== p.number && getArticle(num)) found.add(num);
-    }
+  const add = (num: string) => {
+    if (num !== p.number && getArticle(num)) found.add(num);
+  };
+  for (const m of p.text.matchAll(SINGLE_REF)) add(m[1]);
+  for (const m of p.text.matchAll(LIST_REF)) {
+    // Drop clause references such as "(3)" so only article numbers remain.
+    for (const n of m[1].replace(/\(\w+\)/g, " ").matchAll(/\d+[A-Z]?/g)) add(n[0]);
   }
   return [...found];
 }

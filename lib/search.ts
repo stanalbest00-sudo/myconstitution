@@ -36,7 +36,7 @@ const processTerm = (term: string) => (STOP.has(term) ? null : stem(term));
 const SYNONYMS: Record<string, string> = {
   arrested: "arrest detention liberty", arrest: "detention liberty", detained: "detention arrest liberty",
   jail: "detention imprisonment", prison: "detention imprisonment", bail: "release detention",
-  lawyer: "legal practitioner", attorney: "legal practitioner", police: "arrest search force",
+  lawyer: "legal practitioner", attorney: "legal practitioner", police: "arrest detention search",
   speech: "expression", press: "expression", media: "expression broadcasting", newspaper: "expression",
   journalist: "expression", protest: "assembly", demonstration: "assembly", march: "assembly", union: "association",
   religion: "conscience religion", church: "conscience religion", belief: "conscience",
@@ -60,7 +60,10 @@ const SYNONYMS: Record<string, string> = {
   tax: "taxation", budget: "appropriation estimates consolidated fund", army: "defence forces", military: "defence forces",
   environment: "environment ecologically", pollution: "environment", culture: "cultural", travel: "movement leave seychelles",
   deport: "movement expulsion extradition", trial: "fair hearing charged offence", innocent: "innocent presumed",
-  information: "information access", pardon: "pardon", referendum: "referendum", duties: "duty", responsibilities: "duty",
+  information: "information access", hold: "detention detained arrest produced", held: "detention detained arrest",
+  custody: "detention arrest", serve: "term office", removed: "removal misconduct incapacity", remove: "removal misconduct incapacity",
+  abroad: "outside seychelles", overseas: "outside seychelles", hours: "twenty-four hours produced court", warrant: "search order",
+  resign: "resignation vacant", resigns: "resignation vacant", dies: "death vacant", pardon: "pardon", referendum: "referendum", duties: "duty", responsibilities: "duty",
 };
 
 /** Small French / Kreol Seselwa keyword bridge so text search works before any AI step. */
@@ -148,7 +151,7 @@ export function search(query: string, limit = 10): SearchHit[] {
   const run = (text: string, weight: number) => {
     if (!tokenize(text).some((t) => !STOP.has(t))) return;
     for (const r of idx.search(text, {
-      boost: { heading: 3, label: 2 },
+      boost: { heading: 6, label: 2 },
       prefix: (term) => term.length > 3,
       fuzzy: (term) => (term.length > 5 ? 0.15 : false),
       combineWith: "OR",
