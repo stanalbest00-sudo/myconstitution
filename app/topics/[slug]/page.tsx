@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ReadAloud } from "@/components/ReadAloud";
 import { askHref } from "@/lib/links";
 import { editorialLabel, getProvision, href } from "@/lib/constitution";
 import { getI18n } from "@/lib/i18n";
@@ -11,6 +12,12 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const topic = getTopic((await params).slug);
   return topic ? { title: topic.title, description: topic.summary } : { title: "Not found" };
+}
+
+function spoken(items: TopicPoint[]): string {
+  return items
+    .map((pt) => `${pt.text} (${pt.refs.map((id) => getProvision(id)?.label).filter(Boolean).join(", ")}).`)
+    .join(" ");
 }
 
 function Refs({ ids }: { ids: string[] }) {
@@ -66,6 +73,26 @@ export default async function TopicPage({ params }: Props) {
       <h1 className="display mt-2 text-3xl font-semibold sm:text-4xl">{topic.title}</h1>
       <p className="mt-3 text-lg">{topic.summary}</p>
       <p className="mt-3 rounded-lg bg-surface-2 p-3 text-sm text-muted">{t.topics.editorialNote}</p>
+      <div className="mt-4">
+        <ReadAloud
+          lang="en"
+          label={`${t.tts.listen}: ${topic.title}`}
+          text={[
+            `${topic.title}.`,
+            topic.summary,
+            `${t.topics.key}.`,
+            spoken(topic.points),
+            `${t.topics.limits}.`,
+            spoken(topic.limits),
+            `${t.topics.scenario}: ${topic.scenario.title}.`,
+            topic.scenario.situation,
+            `${t.topics.says}.`,
+            spoken(topic.scenario.whatTheTextSays),
+            `${t.topics.notSettled}.`,
+            topic.scenario.notSettledHere,
+          ].join(" ")}
+        />
+      </div>
 
       <section className="mt-7">
         <h2 className="display text-xl font-semibold">{t.topics.start}</h2>

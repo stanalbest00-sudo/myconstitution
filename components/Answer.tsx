@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { AskResult, Citation } from "@/lib/ai";
 import { useI18n } from "./I18nProvider";
+import { ReadAloud } from "./ReadAloud";
 
 type State =
   | { phase: "loading" }
@@ -80,6 +81,10 @@ export function Answer({ question }: { question: string }) {
         {r.citations.length ? (
           <>
             <h2 className="display text-xl font-semibold">{t.answer.retrievalTitle}</h2>
+            <ReadAloud
+              lang="en"
+              text={[`${t.answer.retrievalTitle}.`, ...r.citations.map((c) => `${c.label}${c.heading ? `, ${c.heading}` : ""}. ${c.excerpt}`)].join(" ")}
+            />
             <ol className="space-y-3">{r.citations.map((c, i) => <CitationCard key={c.id} c={c} index={i} />)}</ol>
           </>
         ) : (
@@ -106,7 +111,19 @@ export function Answer({ question }: { question: string }) {
   return (
     <article aria-live="polite" className="rise space-y-6">
       <section className="card border-ai/40 p-5 sm:p-6" lang={lang}>
-        <AiBadge />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <AiBadge />
+          <ReadAloud
+            lang={lang}
+            text={[
+              t.tts.aiIntro,
+              `${t.answer.short}. ${r.shortAnswer}`,
+              `${t.answer.means}. ${r.whatThisMeans}`,
+              r.limitations.length ? `${t.answer.limits}. ${r.limitations.join(" ")}` : "",
+              r.citations.length ? `${t.answer.provisions}: ${r.citations.map((c) => `${c.label}. ${c.relevance}`).join(" ")}` : "",
+            ].join(" ")}
+          />
+        </div>
         <h2 className="eyebrow mt-3">{t.answer.short}</h2>
         <p className="mt-1 text-lg leading-relaxed">{r.shortAnswer}</p>
 

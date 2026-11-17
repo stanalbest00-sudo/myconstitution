@@ -8,7 +8,7 @@
 4. **English text only.** No official French or Kreol translation was found.
 5. **Constitution AI has not been run against the live API.** See `docs/TESTING.md`.
 6. **French and Kreol interface translations are unreviewed.** The Kreol dictionary is partial and falls back to English.
-7. **Voice input depends on the browser.** No Firefox support; Kreol is a French-recogniser fallback.
+7. **Voice input and read aloud depend on the browser.** No Firefox support for voice input; Kreol uses French recognition and French voices.
 8. **The Constitution only.** No Acts, regulations or case law. Many practical questions depend on those.
 9. **Topic guides were written without review by a Seychelles lawyer.**
 10. **Rate limiting is per server instance**, not global.
@@ -27,5 +27,5 @@ In priority order:
 6. A feedback button ("this explanation looks wrong") using the existing `feedback` table.
 7. An evaluation set of questions with expected citations, run automatically against the live model on each change.
 8. If official translations become available, add them as separate document versions with `text_status = 'official-translation'`.
-9. Spoken answers (text-to-speech), after voice input is proven on real devices.
+9. Highlight the sentence being read aloud, after read-aloud is proven on real devices.
 10. Offline reading via a service worker, useful on poor connections.

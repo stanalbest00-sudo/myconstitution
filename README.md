@@ -16,6 +16,7 @@ An independent civic-education website that lets anyone search, read and ask que
 | Without an API key: questions return the best-matching provisions, clearly labelled | Working, tested |
 | Voice input with editable transcript (browser speech recognition) | Working with a simulated recogniser; **not yet tested with a real microphone** |
 | Kreol Seselwa voice | Experimental fallback to French recognition, labelled as such |
+| Read aloud (text-to-speech) on articles, answers, search matches and topic guides, with pause, resume, speed and stop | Working with a simulated speech engine; **not yet heard on real devices** |
 | Browse by topic: 11 plain-language guides, each statement linked to provisions | Working, tested |
 | Interface languages: English (complete), French and Kreol Seselwa (unreviewed previews, labelled) | Working; translations need human review |
 | Light and dark mode, mobile-first, WCAG 2.2 AA automated checks | Working, tested |

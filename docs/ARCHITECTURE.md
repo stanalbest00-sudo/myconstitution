@@ -49,6 +49,10 @@ Not implemented: the Anthropic server-side refusal-fallback parameter. A refusal
 
 Browser Web Speech API. Microphone → recogniser → text appended to the question box → user edits → user presses Ask. Nothing is submitted automatically. Handles: unsupported browser, permission denied, no speech, other errors; releases the microphone on unmount. Audio never reaches this application.
 
+## Read aloud (`components/ReadAloud.tsx`, `lib/tts.ts`)
+
+Browser `speechSynthesis`. Text is cleaned for speech (placeholder dots removed, "/" read as "or") and split into pieces of at most about 220 characters, because Chrome cuts off long single utterances. Pieces are queued one at a time. Pause is implemented as stop-and-remember-position, which behaves the same everywhere (native pause is unreliable on Android). Only one reader plays at a time, and speech stops when the reader leaves the page. Articles are read in English; AI answers in the answer's language, with French voices standing in for Kreol Seselwa. The control is hidden in browsers without speech synthesis.
+
 ## Internationalisation (`lib/i18n/`)
 
 Typed dictionaries (`en`, `fr`, `crs`) selected by a cookie. `localeMeta[locale].reviewed` controls the "unreviewed translation" banner. Constitutional text is always rendered with `lang="en"`.
@@ -77,7 +81,7 @@ Known gaps: the rate limiter is in memory, so on serverless hosting each warm in
 | --- | --- | --- |
 | Hosting on Vercel Hobby | Free for non-commercial use; Pro is about US$20/month | Fixed |
 | Reading, browsing, text search | No per-use cost | No |
-| Voice input | Free (browser feature) | No |
+| Voice input and read aloud | Free (browser features) | No |
 | AI answer with `claude-opus-5-5` | Roughly US$0.05–0.09 per question (about 8–12k input tokens of provisions, 1.5–2.5k output tokens including reasoning) | **Yes, per question** |
 | AI answer with `claude-sonnet-5-5` | Roughly half of that | Yes |
 | Query planning with `claude-haiku-5-5` | Well under US$0.001 per question | Yes |

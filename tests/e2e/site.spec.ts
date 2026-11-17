@@ -290,3 +290,94 @@ test.describe("accessibility and security headers", () => {
     expect((await request.get("/api/ask")).status()).toBe(405);
   });
 });
+
+test.describe("read aloud", () => {
+  // A simulated speech engine: records what would be spoken and finishes each piece quickly.
+  const mockTts = `
+    window.__spoken = [];
+    window.__cancels = 0;
+    window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; this.lang = ""; this.rate = 1; } };
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: {
+      getVoices: () => [],
+      speak(u) { window.__spoken.push({ text: u.text, lang: u.lang, rate: u.rate }); setTimeout(() => u.onend && u.onend(), window.__slow ? 60000 : 20); },
+      cancel() { window.__cancels++; },
+      pause() {}, resume() {},
+    }});`;
+  type W = { __spoken: { text: string; lang: string; rate: number }[]; __slow?: boolean };
+
+  test("reads an article's text in English, starting with what it is", async ({ page }) => {
+    await page.addInitScript(mockTts);
+    await page.goto("/constitution/article-18");
+    await page.getByRole("button", { name: "Listen" }).click();
+    await expect.poll(() => page.evaluate(() => (window as unknown as W).__spoken.length)).toBeGreaterThan(5);
+    const spoken = await page.evaluate(() => (window as unknown as W).__spoken);
+    expect(spoken[0].text).toMatch(/^Text of the Constitution\. Article 18\. \(1\) Every person has a right to liberty/);
+    expect(spoken.every((s) => s.lang === "en-GB")).toBe(true);
+    await expect(page.getByRole("button", { name: "Listen" })).toBeVisible();
+  });
+
+  test("can be paused, resumed at the same place, slowed down and stopped", async ({ page }) => {
+    await page.addInitScript(mockTts + "window.__slow = true;");
+    await page.goto("/constitution/article-18");
+    await page.getByRole("button", { name: "Listen" }).click();
+    await expect(page.getByText(/Reading part 1 of \d+/)).toBeVisible();
+    await page.getByRole("button", { name: "Pause" }).click();
+    await expect(page.getByText("Paused")).toBeVisible();
+    await page.getByRole("combobox", { name: "Reading speed" }).selectOption("0.8");
+    await page.getByRole("button", { name: "Resume" }).click();
+    const spoken = await page.evaluate(() => (window as unknown as W).__spoken);
+    expect(spoken).toHaveLength(2);
+    expect(spoken[1].text).toBe(spoken[0].text);
+    expect(spoken[1].rate).toBe(0.8);
+    await page.getByRole("button", { name: "Stop" }).click();
+    await expect(page.getByRole("button", { name: "Listen" })).toBeVisible();
+  });
+
+  test("reads the AI answer, announcing that it is AI-generated", async ({ page }) => {
+    await page.addInitScript(mockTts);
+    await page.route("**/api/ask", (r) =>
+      r.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          mode: "ai", status: "answered", language: "en", shortAnswer: "You must be told why.",
+          whatThisMeans: "Plain explanation.", limitations: ["A court may refuse release."], unverifiedMentions: [],
+          citations: [{ id: "article-18", label: "Article 18", heading: "Right to liberty", href: "/constitution/article-18", relevance: "Rights on arrest.", excerpt: "Every person" }],
+        }),
+      }),
+    );
+    await page.goto("/ask#q=arrest");
+    await page.getByRole("button", { name: "Listen" }).click();
+    await expect.poll(() => page.evaluate(() => (window as unknown as W).__spoken.map((s) => s.text).join(" "))).toContain("Article 18");
+    const all = await page.evaluate(() => (window as unknown as W).__spoken.map((s) => s.text).join(" "));
+    expect(all).toMatch(/^AI-generated explanation\. Short answer\. You must be told why\./);
+    expect(all).toContain("Important limitations. A court may refuse release.");
+  });
+
+  test("reads search matches and topic guides", async ({ page }) => {
+    await page.addInitScript(mockTts);
+    await page.goto("/ask#q=freedom%20of%20expression");
+    await page.getByRole("button", { name: "Listen" }).click();
+    await expect.poll(() => page.evaluate(() => (window as unknown as W).__spoken[0]?.text ?? "")).toMatch(/^Provisions that match your question\. Article 22/);
+    await page.goto("/topics/privacy");
+    await page.getByRole("button", { name: "Listen" }).click();
+    await expect.poll(() => page.evaluate(() => (window as unknown as W).__spoken.map((x) => x.text).join(" "))).toMatch(/^Privacy\. Article 20 protects/);
+  });
+
+  test("leaving the page stops reading", async ({ page }) => {
+    await page.addInitScript(mockTts + "window.__slow = true;");
+    await page.goto("/constitution/article-18");
+    await page.getByRole("button", { name: "Listen" }).click();
+    await expect(page.getByRole("button", { name: "Pause" })).toBeVisible();
+    const before = await page.evaluate(() => (window as unknown as { __cancels: number }).__cancels);
+    await page.getByRole("link", { name: /Next/ }).click();
+    await expect(page).toHaveURL(/article-19$/);
+    await expect.poll(() => page.evaluate(() => (window as unknown as { __cancels: number }).__cancels)).toBeGreaterThan(before);
+  });
+
+  test("is hidden in browsers without speech synthesis", async ({ page }) => {
+    await page.addInitScript("delete window.speechSynthesis; delete window.SpeechSynthesisUtterance; delete Window.prototype.speechSynthesis;");
+    await page.goto("/constitution/article-18");
+    await expect(page.locator("[data-official-text]")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Listen" })).toHaveCount(0);
+  });
+});

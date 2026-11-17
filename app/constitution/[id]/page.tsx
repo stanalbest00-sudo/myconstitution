@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { askHref } from "@/lib/links";
 import { CopyLink } from "@/components/CopyLink";
 import { ProvisionBody } from "@/components/ProvisionBody";
+import { ReadAloud } from "@/components/ReadAloud";
 import { SourceNote } from "@/components/SourceNote";
 import {
   chapterOf, chapterTitle, editorialLabel, getProvision, href, neighbours, relatedProvisions, schedules, statusNotes, titleCase,
@@ -100,7 +101,11 @@ export default async function ProvisionPage({ params, searchParams }: Props) {
           </aside>
         )}
 
-        <section className="card mt-5 p-5 sm:p-7" aria-label={t.reader.officialText}>
+        <div className="mt-5">
+          <ReadAloud lang="en" label={`${t.tts.listen}: ${p.label}`} text={`${t.tts.textIntro} ${p.label}. ${p.text}`} />
+        </div>
+
+        <section className="card mt-3 p-5 sm:p-7" aria-label={t.reader.officialText}>
           <p className="eyebrow mb-3">{t.reader.officialText}</p>
           <ProvisionBody content={p.content} terms={terms} />
         </section>

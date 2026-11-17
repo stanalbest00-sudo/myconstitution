@@ -66,6 +66,7 @@ export default async function About() {
       <ul>
         <li>The interface is complete in English. French and Kreol Seselwa interface translations are provided as unreviewed previews and are labelled as such.</li>
         <li>You can ask questions in English, French or Kreol Seselwa. AI explanations in other languages are AI-generated and are never official translations of the Constitution.</li>
+        <li>The Listen button reads articles, answers and topic guides aloud using your device&apos;s built-in voices. Kreol Seselwa explanations are read with a French voice because no Kreol voice is available.</li>
         <li>Voice input uses your browser&apos;s built-in speech recognition where available (for example Chrome, Edge and Safari). We have not found a speech recognition service that supports Kreol Seselwa, so that option is experimental and uses French recognition. You can always edit the text before asking.</li>
       </ul>
 
@@ -75,6 +76,7 @@ export default async function About() {
         <li>Questions are sent to the site&apos;s server and, when AI is enabled, to the AI provider (Anthropic) to generate the answer. This site does not store questions or answers.</li>
         <li>Your question is kept in the part of the web address after “#”, which browsers do not send to servers, so it does not appear in server access logs.</li>
         <li>Audio is never sent to or stored by this site. Speech recognition is performed by your browser&apos;s speech service, which may process audio on the browser vendor&apos;s servers.</li>
+        <li>Reading aloud happens in your browser. Some browsers use online voices (for example Google voices in Chrome), which send the text being read to the browser vendor.</li>
         <li>Two small preferences (language and colour theme) are saved in your browser.</li>
       </ul>
 
